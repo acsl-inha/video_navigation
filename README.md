@@ -1,5 +1,6 @@
 # video_navigation
 Video Navigation for Reusable Rocket Project
+
 참여 인원: 김나영, 김윤중, 최지우
 
 해당 내용을 정리한 jupyter notebook 링크 첨부합니다.
