@@ -3,7 +3,6 @@ Video Navigation for Reusable Rocket Project
 
 참여 인원: 김나영, 김윤중, 최지우
 
-해당 내용을 정리한 jupyter notebook 링크입니다.
 |제목|작성자|내용|참고 code|
 |:------|:---|:---|:---|
 |호모그래피의 특징점 추출|-|-|[cal_homography.py](src/cal_homography.py)|
