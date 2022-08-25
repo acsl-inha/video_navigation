@@ -1,11 +1,11 @@
 import cv2 
-import pandas as pd
+import random
 import numpy as np
+from numpy.linalg import svd
 from google.colab.patches import cv2_imshow
 
 # 영상 불러오기
 dir = '/content/drive/MyDrive/Colab Notebooks/OpenCV_test/'
-
 img1 = cv2.imread(dir+'inha_logo.jpg',cv2.IMREAD_COLOR)
 img2 = cv2.imread(dir+'inha_pitch',cv2.IMREAD_COLOR)
 gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
@@ -43,16 +43,13 @@ pts1 = np.array([kp1[m.queryIdx].pt for m in good_matches]
 pts2 = np.array([kp2[m.trainIdx].pt for m in good_matches]
 				).reshape(-1, 1, 2).astype(np.float32)    # 이동 keypoint
         
-from typing import Hashable
-import random
-import numpy as np
-from numpy.linalg import svd
 
 # 호모그래피 계산
-iter = 300    # RANSAC 반복 횟수
+iter = 500   # RANSAC 반복 횟수
+e_limit = 100   # RANSAC error 임계값
 num_list = list(range(len(good_matches)))
 
-STE_save = 0
+inlier_save = 0
 H_save = []
 for i in range(iter):
   # 호모그래피 계산에 필요한 keypoint set 임의 선정 (1set은 4point로 구성)
@@ -70,36 +67,36 @@ for i in range(iter):
   # 호모그래피 산출
   h = Vh[-1]
   s = h[-1]
-  H = h.reshape(3,3)
+  H = h.reshape(3,3)/s
 
-  # STE(Symmetric Transfer Error) 계산
-  STE = 0
+  # inlier 수 계산
+  inlier = 0
   for p in range(len(good_matches)):
-    p1 = np.append(pts1[0], np.array([1]))
+    p1 = np.append(pts1[p], np.array([1]))
     p2 = H@p1
-    error = np.linalg.norm(np.append(pts2[0], np.array([1])) - p2)
-    STE = STE + error
-  
-  # 최소 STE를 갖는 호모그래피로 업데이트
+    p2 = p2/p2[2]
+    error = np.linalg.norm(np.append(pts2[p], np.array([1])) - p2)
+    if error < e_limit:
+      inlier += 1
+
+  # 최대 inlier 수를 갖는 호모그래피로 업데이트
   if H_save == []:
     H_save = H
-  if STE_save == 0:
-    STE_save = STE
-  if STE < STE_save:
+  if inlier_save == 0:
+    inlier_save = inlier
+  if inlier > inlier_save:
     H_save = H
-    STE_save = STE
+    inlier_save = inlier
 
+# OpenCV 함수로 계산한 
 H_cv, _ = cv2.findHomography(pts1, pts2, cv2.RANSAC)
 
-print('U',U.shape,': \n',U)
-print('D',D.shape,': \n',D)
-print('V',Vh.shape,': \n',Vh)
-print('A',A.shape,': \n',A)
-print('h: \n',h)
-print('s: \n',s)
-print('H_save: \n',H_save)
-print('H_cv: \n',H_cv)
-print('STE_save: \n',STE_save)
-
-
-    
+# print('U',U.shape,': \n',U)
+# print('D',D.shape,': \n',D)
+# print('Vh',Vh.shape,': \n',Vh)
+# print('A',A.shape,': \n',A)
+# print('h: \n',h)
+# print('s: \n',s)
+print('H_save: \n',np.round(H_save))
+print('H_cv: \n',np.round(H_cv))
+print('inlier_save: \n',inlier_save)
