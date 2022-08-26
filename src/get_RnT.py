@@ -4,7 +4,6 @@ from itertools import product
 # Get rotation matrix and translation vector form a given homography matrix
 # Written by JW_Choi
 
-
 class get_RnT():
     def __init__(self, G, calib_mat):
         H_hat = lg.inv(calib_mat)@G@calib_mat
