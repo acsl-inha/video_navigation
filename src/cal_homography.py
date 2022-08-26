@@ -87,6 +87,22 @@ for i in range(iter):
   if inlier > inlier_save:
     H_save = H
     inlier_save = inlier
+	
+# 후작업: inlier points로 최소제곱법
+A2 = np.empty((0,9))
+for n in inlier_save:
+  A2 = np.append(A2,np.array([[pts1[n,0,0], pts1[n,0,1], 1, 0, 0, 0, -pts1[n,0,0]*pts2[n,0,0], -pts1[n,0,1]*pts2[n,0,0], -pts2[n,0,0]]]),axis=0)
+  A2 = np.append(A2,np.array([[0, 0, 0, pts1[n,0,0], pts1[n,0,1], 1, -pts1[n,0,0]*pts2[n,0,1], -pts1[n,0,1]*pts2[n,0,1], -pts2[n,0,1]]]),axis=0)
+
+# 특이값 분해
+[U2,D2,Vh2] = np.linalg.svd(A2, full_matrices=True)
+
+# 호모그래피 산출
+h2 = Vh2[-1]
+s2 = h2[-1]
+H2 = h2.reshape(3,3)/s2
+
+H_cv, _ = cv2.findHomography(pts1, pts2, cv2.RANSAC)
 
 # OpenCV 함수로 계산한 
 H_cv, _ = cv2.findHomography(pts1, pts2, cv2.RANSAC)
