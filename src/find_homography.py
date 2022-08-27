@@ -77,18 +77,18 @@ class find_homography:
 if __name__ == '__main__':
   # OpenCV RANSAC
   H_cv, _ = cv2.findHomography(pts1, pts2, cv2.RANSAC)
+  
+  # LSM
+  H_lsm = find_homography.LSM(list(range(200)),pts1,pts2)
 
   # RANSAC
   H_ran, _ = find_homography.RANSAC(list(range(200)),pts1,pts2,300,100)
-
-  # LSM
-  H_lsm = find_homography.LSM(list(range(200)),pts1,pts2)
 
   # RANSAC + LSM
   H_temp,inlier = find_homography.RANSAC(list(range(200)),pts1,pts2,300,100)
   H_ran_lsm = find_homography.LSM(inlier,pts1,pts2)
 
   print('\n H using OpenCV:\n',H_cv)
-  print('\n H using RANSAC:\n',H_ran)
   print('\n H using LSM:\n',H_lsm)
+  print('\n H using RANSAC:\n',H_ran)
   print('\n H using RANSAC + LSM:\n',H_ran_lsm)
