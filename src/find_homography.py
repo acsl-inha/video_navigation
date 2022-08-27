@@ -6,7 +6,7 @@ Calculating an optimal homography by using
   2. LSM(Least Square Method)
   3. LSM with inlier points obtained from RANSAC
 
-I lastly, compared the results with the OpenCV value.
+Lastly, compared the results with the OpenCV value.
 
 Written by YJ_KIM (@ Muun-Muun)
 """
