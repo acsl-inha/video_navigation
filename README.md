@@ -1,7 +1,7 @@
 # video_navigation
 Video Navigation for Reusable Rocket Project
 
-참여 인원: 김나영, 김윤중, 최지우
+참여 인원: 김윤중, 김나영, 최지우
 
 |제목|작성자|내용|참고 code|
 |:------|:---|:---|:---|
